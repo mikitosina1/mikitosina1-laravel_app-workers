@@ -2,21 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+use App\Models\Employee;
 
 
 Route::get('/', function () {
@@ -25,8 +11,12 @@ Route::get('/', function () {
 
 Route::post('/create', function (Request $request) {
   $validator = Validator::make($request->all(), [
-    //TODO вся валидация https://laravel.ru/docs/v5/quickstart
-    'fio' => 'required|max:100',
+	'email' => 'required|max:60',
+	'fio' => 'required|max:60',
+	'age' => 'required|integer',
+	'exp' => 'required|integer',
+	'cash' => 'required|integer',
+	'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
   ]);
 
   if ($validator->fails()) {
@@ -35,5 +25,41 @@ Route::post('/create', function (Request $request) {
       ->withErrors($validator);
   }
 
-  // Создание задачи...
+	$imageName = md5(time()).'.'.$request->image->extension();
+
+	$worker = new Employee();
+	$worker->email = $request->email;
+	$worker->fio = $request->fio;
+	$worker->age = $request->age;
+	$worker->exp = $request->exp;
+	$worker->cash = $request->cash;
+	$worker->image = $imageName;
+	$worker->save();
+
+	$request->image->move(public_path('uploads'), $imageName);
+	return redirect('/');
 });
+
+Route::get('/list', function () {
+	$list = Employee::orderBy('id', 'desc')->get();
+	return view('list', [
+		'list' => $list
+	]);
+});
+
+Route::delete('/employee/delete/{employee}', function (Employee $employee) {
+	$employee->delete();
+
+	return redirect('/');
+});
+
+Route::get('/employee/{employee}', function (Employee $employee) {
+
+	return view('view', [
+		'employee' => $employee
+	]);
+});
+
+
+
+

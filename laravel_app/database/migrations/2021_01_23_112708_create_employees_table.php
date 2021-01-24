@@ -20,7 +20,7 @@ class CreateEmployeesTable extends Migration
             $table->integer('age');
             $table->integer('exp');
             $table->float('cash');
-            $table->string('image', 100);
+            $table->string('image', 100)->default('');
         });
     }
 

@@ -1,0 +1,20 @@
+.fio{
+    width: 35em;
+}
+
+.photo{
+    width: 33em;
+}
+
+.form__button {
+    margin-left: 5em;
+    margin-right: auto;
+    width: 8em;
+}
+
+.profile_photo{
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    width: 32em;
+}
